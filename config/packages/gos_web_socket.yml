@@ -1,0 +1,11 @@
+gos_web_socket:
+  server:
+    port: '%env(WEBSOCKET_PORT)%'   #The port the socket server will listen on
+    host: '%env(WEBSOCKET_HOST)%'   #The host ip to bind to
+    router:
+      resources:
+        - '%kernel.project_dir%/src/Resources/config/routing.yaml'
+
+  client:
+    firewall: main #can be an array of firewalls
+    session_handler: session.handler.pdo

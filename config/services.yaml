@@ -1,0 +1,54 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+  locale: 'en'
+  app_admin_user: '%env(APP_ADMIN_USER)%'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+  App\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
+
+  websocket_topic.chat:
+    class: App\Topic\ChatTopic
+    tags:
+      - { name: gos_web_socket.topic }
+
+  Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface:
+    alias: gos_web_socket.websocket.client_manipulator
+
+  pdo:
+    class: \PDO
+    arguments:
+      $dsn: '%env(DATABASE_DSN)%'
+      $username: '%env(DATABASE_USER)%'
+      $passwd: '%env(DATABASE_PASSWORD)%'
+    calls:
+      - [ setAttribute, [3, 2] ] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+
+  session.handler.pdo:
+    class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+    arguments: ["@pdo", {lock_mode: 0}]
+
+  App\Form\Validator\Constraint\AllowedUsernameValidator:
+    arguments:
+      $adminUsername: '%app_admin_user%'
+
+  App\Controller\ApiSecurityController:
+    arguments:
+      $adminUsername: '%app_admin_user%'
+
+  App\Controller\ApiAdminController:
+    arguments:
+      $adminUsername: '%app_admin_user%'
