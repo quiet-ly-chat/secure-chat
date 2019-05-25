@@ -1,12 +1,11 @@
 # Quiet.ly
 
 ## Configuration
-
 ### 1. Create an AWS account
 Remember to follow [AWS best practices](https://console.aws.amazon.com/iam/home)!
 ### 2. Create an EC2 instance
 A free tier eligible instance will be enough for our application. You can skip steps 2-5. Remember to configure a Security Group in step 6:
-(readme/securitygroups.png?raw=true "")
+![Alt text](readme/securitygroups.png?raw=true "")
 ### 3. Access your new EC2 instance
 You will find detailed instructions in the "Connect" tab.
 ### 4. Install required software
@@ -18,9 +17,11 @@ sudo vim /etc/yum.repos.d/MariaDB.repo
     gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
     gpgcheck=1
 sudo yum install mariadb-server
-sudo systemctl enable --now mariadb```
+sudo systemctl enable --now mariadb
+```
 Follow `mysql_secure_installation` installation guide.
-```mysql -u root -p
+```
+mysql -u root -p
     CREATE DATABASE db_name;
     CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
     GRANT ALL ON db_name.* TO 'username'@'localhost';
@@ -43,19 +44,20 @@ cd secure-chat-master/
 sudo php ../composer.phar install
 sudo npm install
 sudo cp .env.dist .env
-sudo rm /etc/nginx/nginx.conf```
-Paste nginx configuration here: ```sudo vim /etc/nginx/nginx.conf``` see: (readme/example.config)
-Configure your database credentials here: ```sudo vim .env```
+sudo rm /etc/nginx/nginx.conf
+```
+Paste nginx configuration here ([example configuration](readme/example.config)): `sudo vim /etc/nginx/nginx.conf`
+
+Configure your database credentials: `sudo vim .env`
 ```sudo php bin/console doctrine:migrations:migrate
 sudo npm run build
 php bin/console gos:websocket:server & disown
-sudo service php-fpm restart```
-```sudo nginx```
+sudo service php-fpm restart
+sudo nginx
+```
 ### 5. Enable TLS
-**_Coming _soon!**
-
+**Coming soon!**
 ### 6. Register user "admin" in the application at URL:31337!
-
 ## Built With
 #### Frameworks:
 * [Symfony 4.2](https://symfony.com/)
